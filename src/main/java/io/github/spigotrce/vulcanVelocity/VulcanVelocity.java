@@ -18,7 +18,7 @@ public class VulcanVelocity {
     private final AlertManager alertManager;
 
     public VulcanVelocity() {
-        this.alertManager = new AlertManager();
+        this.alertManager = new AlertManager(this, );
     }
 
     @Inject

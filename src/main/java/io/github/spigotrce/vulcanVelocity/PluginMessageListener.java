@@ -1,5 +1,7 @@
 package io.github.spigotrce.vulcanVelocity;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -19,10 +21,19 @@ public class PluginMessageListener {
     }
 
     @Subscribe
-    public void onPluginMessageReceived(PluginMessageEvent event) {
-        if (!(event.getSource() instanceof ServerConnection) ||
-                event.getIdentifier().equals(identifier) ||
-                event.getData().length == 0) {
+    public void onPluginMessage(PluginMessageEvent event) {
+        if (!event.getIdentifier().getId().equals("vulcan:bungee") || !(event.getSource() instanceof ServerConnection)) return;
+
+        event.setResult(PluginMessageEvent.ForwardResult.handled());
+        ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
+        switch (in.readUTF()) {
+            case "alert": {
+                vulcanVelocity.getAlertManager().handleAlert(event.getSource(), in);
+                break;
+            }
+            case "punishment": {
+                vulcanVelocity.getAlertManager().handlePunishment((ServerConnection)((Object)event.getSource()), in);
+            }
         }
     }
 }
