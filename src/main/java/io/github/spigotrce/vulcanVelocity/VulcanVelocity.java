@@ -15,11 +15,20 @@ import org.slf4j.Logger;
         }
 )
 public class VulcanVelocity {
+    private final AlertManager alertManager;
+
+    public VulcanVelocity() {
+        this.alertManager = new AlertManager();
+    }
 
     @Inject
     private Logger logger;
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
+    }
+
+    public AlertManager getAlertManager() {
+        return alertManager;
     }
 }
